@@ -6,9 +6,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.caltech.miniswing.serviceclient.ServiceService;
 import org.caltech.miniswing.serviceclient.dto.ServiceDto;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.test.StepVerifier;
 
@@ -19,21 +17,23 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServiceClientTest {
-    private static MockWebServer mockBackEnd;
+    private MockWebServer mockBackEnd;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final String baseUrl = String.format("http://localhost:%s/swing/api/v1", mockBackEnd.getPort());
+    private String baseUrl;
     private final long reqSvcMgmtNum = 1L;
 
-    @BeforeClass
-    public static void beforeClass() throws IOException  {
+    @Before
+    public void setup() throws IOException  {
         mockBackEnd = new MockWebServer();
         mockBackEnd.start();
+
+        baseUrl = String.format("http://localhost:%s/swing/api/v1", mockBackEnd.getPort());
     }
 
-    @AfterClass
-    public static void afterClass() throws IOException  {
+    @After
+    public void tearDown() throws IOException  {
         mockBackEnd.shutdown();
     }
 
@@ -67,7 +67,7 @@ public class ServiceClientTest {
         StepVerifier.create(
                 ServiceService.client( WebClient.create(baseUrl) ).getServicesByCustNum(0, 5, 1, true)
         )
-                .expectNextCount(2)
+                .expectNextCount(1)
                 .verifyComplete();
 
         RecordedRequest recordedRequest = mockBackEnd.takeRequest();

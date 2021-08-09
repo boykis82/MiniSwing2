@@ -1,5 +1,6 @@
 package org.caltech.miniswing.gateway;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.LinkedHashMap;
 
+@Slf4j
 @Configuration
 public class HealthCheckConfiguration {
-
-    private static final Logger LOG = LoggerFactory.getLogger(HealthCheckConfiguration.class);
-
     private HealthAggregator healthAggregator;
 
     private final WebClient.Builder webClientBuilder;
@@ -36,6 +35,7 @@ public class HealthCheckConfiguration {
 
         ReactiveHealthIndicatorRegistry registry = new DefaultReactiveHealthIndicatorRegistry(new LinkedHashMap<>());
 
+        registry.register("auth-server",       () -> getHealth("http://auth-server"));
         registry.register("product",           () -> getHealth("http://product"));
         registry.register("service",           () -> getHealth("http://service"));
         registry.register("plm",               () -> getHealth("http://plm"));
@@ -46,7 +46,7 @@ public class HealthCheckConfiguration {
 
     private Mono<Health> getHealth(String url) {
         url += "/actuator/health";
-        LOG.debug("Will call the Health API on URL: {}", url);
+        log.debug("Will call the Health API on URL: {}", url);
         return getWebClient().get().uri(url).retrieve().bodyToMono(String.class)
                 .map(s -> new Health.Builder().up().build())
                 .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))

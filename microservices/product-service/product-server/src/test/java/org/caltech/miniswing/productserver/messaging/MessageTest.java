@@ -1,6 +1,8 @@
 package org.caltech.miniswing.productserver.messaging;
 
 import org.caltech.miniswing.event.DomainEventEnvelope;
+import org.caltech.miniswing.plmclient.PlmClient;
+import org.caltech.miniswing.plmclient.dto.ProdResponseDto;
 import org.caltech.miniswing.plmclient.dto.SvcProdCd;
 import org.caltech.miniswing.productclient.dto.ProdSubscribeRequestDto;
 import org.caltech.miniswing.productclient.dto.SvcProdResponseDto;
@@ -18,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.cloud.stream.test.binder.MessageCollector;
 import org.springframework.integration.channel.AbstractMessageChannel;
@@ -28,13 +31,17 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @RunWith(SpringRunner.class)
@@ -67,6 +74,9 @@ public class MessageTest {
 
     @Autowired
     private ProdService prodService;
+
+    @MockBean(name = "plmClient")
+    private PlmClient plmClient;
 
     private long svcMgmtNum;
 
@@ -115,6 +125,12 @@ public class MessageTest {
 
     @Test
     public void test_서비스해지수신() {
+        given( plmClient.getProdNmByIds( Arrays.asList("NA00000001", "NA00000006") ) )
+                .willReturn( Mono.just(Arrays.asList(
+                        ProdResponseDto.builder().prodId("NA00000001").prodNm("표준요금제").build(),
+                        ProdResponseDto.builder().prodId("NA00000006").prodNm("Flo").build())
+                ));
+
         assertThat( prodService.getServiceProducts(svcMgmtNum, true)
                 .block()
                 .stream()

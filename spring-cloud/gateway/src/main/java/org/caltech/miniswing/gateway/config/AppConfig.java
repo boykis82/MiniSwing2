@@ -12,20 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Configuration
 public class AppConfig {
 
+    /*
     @LoadBalanced
     @Bean
     public WebClient.Builder loadBalancedWebClientBuilder() {
         return WebClient.builder();
     }
+
+     */
 
     @Autowired
     private WebClient.Builder webClientBuilder;

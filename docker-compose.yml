@@ -128,20 +128,23 @@ services:
       rabbitmq:
         condition: service_healthy
 
-
   gateway:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     build: spring-cloud/gateway
     mem_limit: 350m
     ports:
-      - "8080:8080"
-
+      - "8443:8443"
 
   eureka:
     build: spring-cloud/eureka-server
     mem_limit: 350m
 
+  auth-server:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    build: spring-cloud/auth-server
+    mem_limit: 350m
 
   rabbitmq:
     image: rabbitmq:3.7.8-management
