@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-java -jar spring-cloud/auth-server/build/libs/*.jar &
+java -jar -Dspring.profiles.active=native spring-cloud/config-server/build/libs/*.jar &
 java -jar spring-cloud/gateway/build/libs/*.jar &
 java -jar spring-cloud/eureka-server/build/libs/*.jar &
 java -jar microservices/customer-service/customer-server/build/libs/*.jar &

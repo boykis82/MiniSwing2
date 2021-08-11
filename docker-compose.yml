@@ -87,6 +87,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-product:
         condition: service_healthy
@@ -100,6 +102,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-plm:
         condition: service_healthy
@@ -111,6 +115,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-customer:
         condition: service_healthy
@@ -122,6 +128,8 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-service:
         condition: service_healthy
@@ -131,19 +139,19 @@ services:
   gateway:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     build: spring-cloud/gateway
     mem_limit: 350m
     ports:
       - "8443:8443"
 
   eureka:
-    build: spring-cloud/eureka-server
-    mem_limit: 350m
-
-  auth-server:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    build: spring-cloud/auth-server
+      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
+      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
+    build: spring-cloud/eureka-server
     mem_limit: 350m
 
   rabbitmq:
@@ -157,3 +165,11 @@ services:
       interval: 20s
       timeout: 5s
       retries: 10
+
+  config-server:
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,native
+    build: spring-cloud/config-server
+    volumes:
+      - $PWD/config-repo:/config-repo
+    mem_limit: 350m

@@ -1,6 +1,6 @@
 FROM azul/zulu-openjdk:11.0.7
 
-EXPOSE 8761
+EXPOSE 8888
 
 ADD ./build/libs/*.jar app.jar
 

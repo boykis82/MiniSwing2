@@ -170,16 +170,17 @@ spring init \
 --version=1.0.0-SNAPSHOT \
 gateway
 
+
 spring init \
 --boot-version=2.3.2.RELEASE \
 --build=gradle \
 --java-version=1.8 \
 --packaging=jar \
 --name=util \
---package-name=org.caltech.miniswing.authserver \
---groupId=org.caltech.miniswing.authserver \
+--package-name=org.caltech.miniswing.configserver \
+--groupId=org.caltech.miniswing.configserver \
 --dependencies=actuator,webflux \
 --version=1.0.0-SNAPSHOT \
-auth-server
+config-server
 
 cd ..

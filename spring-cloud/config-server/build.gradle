@@ -14,7 +14,7 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-group 'org.caltech.miniswing.eureka'
+group 'org.caltech.miniswing.config'
 version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
@@ -27,14 +27,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.glassfish.jaxb:jaxb-runtime'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.cloud:spring-cloud-config-server'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	// config
-	implementation('org.springframework.cloud:spring-cloud-starter-config')
-	implementation('org.springframework.retry:spring-retry')
 }
 
 dependencyManagement {
@@ -42,3 +38,4 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+

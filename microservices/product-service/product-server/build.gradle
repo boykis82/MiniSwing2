@@ -77,6 +77,10 @@ dependencies {
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 	testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
+	// config
+	implementation('org.springframework.cloud:spring-cloud-starter-config')
+	implementation('org.springframework.retry:spring-retry')
+
 }
 
 dependencyManagement {

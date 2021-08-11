@@ -37,4 +37,8 @@ dependencies {
 	implementation 'com.nimbusds:nimbus-jose-jwt:6.7'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// config
+	implementation('org.springframework.cloud:spring-cloud-starter-config:2.2.3.RELEASE')
+	implementation('org.springframework.retry:spring-retry')
 }

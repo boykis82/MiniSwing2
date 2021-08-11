@@ -18,14 +18,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class AppConfig {
 
-    /*
     @LoadBalanced
     @Bean
     public WebClient.Builder loadBalancedWebClientBuilder() {
         return WebClient.builder();
     }
-
-     */
 
     @Autowired
     private WebClient.Builder webClientBuilder;

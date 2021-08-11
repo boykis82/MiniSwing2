@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"eureka.client.enabled=false"}
+        properties = {"eureka.client.enabled=false","spring.cloud.config.enabled=false"}
 )
 public class ProdControllerTest {
     @LocalServerPort
