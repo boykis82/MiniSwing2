@@ -18,9 +18,7 @@ services:
       retries: 10
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
-      - /Users/realimpact/Documents/swingdb/plm:/var/lib/mysql
-    networks:
-      - my-network
+      - ./swingdb/plm:/var/lib/mysql
 
   mysql-product:
     image: mysql:5.7
@@ -39,9 +37,7 @@ services:
       retries: 10
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
-      - /Users/realimpact/Documents/swingdb/product:/var/lib/mysql
-    networks:
-      - my-network
+      - ./swingdb/product:/var/lib/mysql
 
   mysql-customer:
     image: mysql:5.7
@@ -60,9 +56,7 @@ services:
       retries: 10
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
-      - /Users/realimpact/Documents/swingdb/customer:/var/lib/mysql
-    networks:
-      - my-network
+      - ./swingdb/customer:/var/lib/mysql
 
   mysql-service:
     image: mysql:5.7
@@ -81,9 +75,8 @@ services:
       retries: 10
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
-      - /Users/realimpact/Documents/swingdb/service:/var/lib/mysql
-    networks:
-      - my-network
+      - ./swingdb/service:/var/lib/mysql
+
 
   prod:
     build: microservices/product-service/product-server
@@ -96,8 +89,6 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-    networks:
-      - my-network
 
   plm:
     build: microservices/plm-service/plm-server
@@ -108,8 +99,7 @@ services:
     depends_on:
       mysql-plm:
         condition: service_healthy
-    networks:
-      - my-network
+
 
   customer:
     build: microservices/customer-service/customer-server
@@ -120,8 +110,7 @@ services:
     depends_on:
       mysql-customer:
         condition: service_healthy
-    networks:
-      - my-network
+
 
   service:
     build: microservices/service-service/service-server
@@ -134,8 +123,7 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-    networks:
-      - my-network
+
 
   gateway:
     environment:
@@ -144,16 +132,14 @@ services:
     mem_limit: 350m
     ports:
       - "8443:8443"
-    networks:
-      - my-network
+
 
   eureka:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     build: spring-cloud/eureka-server
     mem_limit: 350m
-    networks:
-      - my-network
+
 
   rabbitmq:
     image: rabbitmq:3.7.8-management
@@ -161,29 +147,27 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    volumes:
+      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./definitions.json:/etc/rabbitmq/definitions.json:ro
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 20s
       timeout: 5s
       retries: 10
-    networks:
-      - my-network
+
 
   config-server:
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,native
+      - SPRING_PROFILES_ACTIVE=docker
+      - ENCRYPT_KEY=my-very-secure-encrypt-key
     build: spring-cloud/config-server
-    volumes:
-      - $PWD/config-repo:/config-repo
     mem_limit: 350m
-    networks:
-      - my-network
+
 
   zipkin:
     image: openzipkin/zipkin:2.23.2
     mem_limit: 512m
-    networks:
-      - my-network
     environment:
       - STORAGE_TYPE=mem
       - RABBIT_ADDRESSES=rabbitmq
@@ -192,7 +176,3 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-
-networks:
-  my-network:
-    name: my-network
