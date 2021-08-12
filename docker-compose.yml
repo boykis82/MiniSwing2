@@ -19,7 +19,8 @@ services:
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
       - /Users/realimpact/Documents/swingdb/plm:/var/lib/mysql
-
+    networks:
+      - my-network
 
   mysql-product:
     image: mysql:5.7
@@ -39,7 +40,8 @@ services:
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
       - /Users/realimpact/Documents/swingdb/product:/var/lib/mysql
-
+    networks:
+      - my-network
 
   mysql-customer:
     image: mysql:5.7
@@ -59,7 +61,8 @@ services:
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
       - /Users/realimpact/Documents/swingdb/customer:/var/lib/mysql
-
+    networks:
+      - my-network
 
   mysql-service:
     image: mysql:5.7
@@ -79,7 +82,8 @@ services:
     volumes:
       - ./mysql-custom.cnf:/etc/mysql/conf.d/custom.cnf
       - /Users/realimpact/Documents/swingdb/service:/var/lib/mysql
-
+    networks:
+      - my-network
 
   prod:
     build: microservices/product-service/product-server
@@ -87,14 +91,13 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
-      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-product:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-
+    networks:
+      - my-network
 
   plm:
     build: microservices/plm-service/plm-server
@@ -102,12 +105,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
-      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-plm:
         condition: service_healthy
-
+    networks:
+      - my-network
 
   customer:
     build: microservices/customer-service/customer-server
@@ -115,12 +117,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
-      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-customer:
         condition: service_healthy
-
+    networks:
+      - my-network
 
   service:
     build: microservices/service-service/service-server
@@ -128,31 +129,31 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - TZ=Asia/Seoul
-      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     depends_on:
       mysql-service:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - my-network
 
   gateway:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     build: spring-cloud/gateway
     mem_limit: 350m
     ports:
       - "8443:8443"
+    networks:
+      - my-network
 
   eureka:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      #- CONFIG_SERVER_USR=${CONFIG_SERVER_USR}
-      #- CONFIG_SERVER_PWD=${CONFIG_SERVER_PWD}
     build: spring-cloud/eureka-server
     mem_limit: 350m
+    networks:
+      - my-network
 
   rabbitmq:
     image: rabbitmq:3.7.8-management
@@ -165,6 +166,8 @@ services:
       interval: 20s
       timeout: 5s
       retries: 10
+    networks:
+      - my-network
 
   config-server:
     environment:
@@ -173,3 +176,23 @@ services:
     volumes:
       - $PWD/config-repo:/config-repo
     mem_limit: 350m
+    networks:
+      - my-network
+
+  zipkin:
+    image: openzipkin/zipkin:2.23.2
+    mem_limit: 512m
+    networks:
+      - my-network
+    environment:
+      - STORAGE_TYPE=mem
+      - RABBIT_ADDRESSES=rabbitmq
+    ports:
+      - 9411:9411
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+networks:
+  my-network:
+    name: my-network

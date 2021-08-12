@@ -20,6 +20,9 @@ spring.rabbitmq:
   username: guest
   password: '{cipher}17fcf0ae5b8c5cf87de6875b699be4a1746dd493a99d926c7a26a68c422117ef'
 
+spring.zipkin.sender.type: rabbit
+spring.sleuth.sampler.probability: 1.0
+
 # WARNING: Exposing all management endpoints over http should only be used during development, must be locked down in production!
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
