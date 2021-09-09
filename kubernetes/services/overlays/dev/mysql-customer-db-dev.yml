@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-customer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-customer
+  template:
+    metadata:
+      labels:
+        app: mysql-customer
+    spec:
+      containers:
+      - name: mysql-customer
+        image: mysql:5.7
+        volumeMounts:
+          - name: customer-db-volume
+            mountPath: /var/lib/mysql
+          - name: mysql-custom
+            mountPath: /etc/mysql/conf.d/custom.cnf
+        args:
+          - "--ignore-db-dir=lost+found"
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: rootpwd
+          - name: MYSQL_DATABASE
+            value: customer
+          - name: MYSQL_USER
+            value: user
+          - name: MYSQL_PASSWORD
+            value: pwd
+        ports:
+          - containerPort: 3306
+        resources:
+          limits:
+            memory: 350Mi
+      volumes:
+        - name: customer-db-volume
+          hostPath:
+            path: /miniswing/swingdb/customer
+            type: Directory
+        - name: mysql-custom
+          hostPath:
+            path: /miniswing/mysql-custom.cnf
+            type: File
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-customer
+spec:
+  selector:
+    app: mysql-customer
+  ports:
+    - port: 3306

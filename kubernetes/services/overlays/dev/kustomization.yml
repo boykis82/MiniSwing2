@@ -1,0 +1,8 @@
+bases:
+  - ../../base
+resources:
+  - mysql-plm-db-dev.yml
+  - mysql-product-db-dev.yml
+  - mysql-customer-db-dev.yml
+  - mysql-service-db-dev.yml
+  - rabbitmq-dev.yml

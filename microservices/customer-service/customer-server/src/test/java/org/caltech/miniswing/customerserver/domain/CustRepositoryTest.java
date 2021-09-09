@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
-        properties = {"eureka.client.enabled=false","spring.cloud.config.enabled=false"}
+        properties = {"spring.cloud.config.enabled=false"}
 )
 public class CustRepositoryTest {
     @Autowired

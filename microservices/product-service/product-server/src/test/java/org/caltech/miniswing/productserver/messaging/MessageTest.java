@@ -47,7 +47,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"eureka.client.enabled=false","spring.cloud.config.enabled=false"}
+        properties = {"spring.cloud.config.enabled=false"}
 )
 public class MessageTest {
 

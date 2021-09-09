@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(     //-- mysql57dialect로 변경한 뒤에는 datajpatest가 동작을 안한다.. 뭘까.
-        properties = {"eureka.client.enabled=false","spring.cloud.config.enabled=false"}
+        properties = {"spring.cloud.config.enabled=false"}
 )
 public class ProdRepositoryTest {
     @Autowired

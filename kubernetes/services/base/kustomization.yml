@@ -1,0 +1,7 @@
+resources:
+- config-server.yml
+- gateway.yml
+- plm.yml
+- product.yml
+- service.yml
+- customer.yml

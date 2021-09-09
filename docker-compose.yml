@@ -80,6 +80,7 @@ services:
 
   prod:
     build: microservices/product-service/product-server
+    image: mini-swing-pilot/product-server
     mem_limit: 350m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -92,6 +93,7 @@ services:
 
   plm:
     build: microservices/plm-service/plm-server
+    image: mini-swing-pilot/plm-server
     mem_limit: 350m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -103,6 +105,7 @@ services:
 
   customer:
     build: microservices/customer-service/customer-server
+    image: mini-swing-pilot/customer-server
     mem_limit: 350m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -114,6 +117,7 @@ services:
 
   service:
     build: microservices/service-service/service-server
+    image: mini-swing-pilot/service-server
     mem_limit: 350m
     environment:
       - SPRING_PROFILES_ACTIVE=docker
@@ -129,17 +133,10 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     build: spring-cloud/gateway
+    image: mini-swing-pilot/gateway
     mem_limit: 350m
     ports:
       - "8443:8443"
-
-
-  eureka:
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    build: spring-cloud/eureka-server
-    mem_limit: 350m
-
 
   rabbitmq:
     image: rabbitmq:3.7.8-management
@@ -156,14 +153,13 @@ services:
       timeout: 5s
       retries: 10
 
-
   config-server:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - ENCRYPT_KEY=my-very-secure-encrypt-key
     build: spring-cloud/config-server
+    image: mini-swing-pilot/config-server
     mem_limit: 350m
-
 
   zipkin:
     image: openzipkin/zipkin:2.23.2
